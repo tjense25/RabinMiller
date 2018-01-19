@@ -25,6 +25,12 @@ def getNonTrivialFactors(N, b):
 	return "%d * %d" % (p, q)
 
 def RabinMiller(N, k):
+	if N < 1:
+		print("Please insert a non-zero Positive integer")
+		return
+	if  N == 1:
+		print("1 is not prime!")
+		return
 	if  N == 2:
 		print("2 is prime!")
 		return
@@ -35,18 +41,14 @@ def RabinMiller(N, k):
 		d /= 2
 		r += 1
 
-	#Randomly select as to be tested dependent on passed in for k
-	if N <= k + 2:
-		a_list = range(2, N)
-	else:
-		a_list = random.sample(range(2, N), k)
-
 	#define exception to allow us to continue primary loop in nested loops
 	class ContinueWitnessLoop(Exception): pass
 	
 	#Iterate through the chosen a's testing to see if any a's are witnesses 
-	for a in a_list:
+	for a in range(k):
 		try: 
+			a = random.randint(2, N - 1)
+
 			#Now calculate b = a^d. If b = 1 or -1 (mod N), then probably prime
 			b = exp(a, d, N)
 			if b == 1 or b == N - 1:
@@ -60,7 +62,7 @@ def RabinMiller(N, k):
 					#We have found a nontrivial square root of 1!! N must be composite!!
 					print("%d is composite with Non-Trivial Divisors: %s" % (N, getNonTrivialFactors(N, b)))
 					return
-				if b_square == -1:
+				if b_square == N - 1:
 					#N passes fermat, so it is probably prime. So contiue witness loop
 					raise ContinueWitnessLoop()
 				b = b_square
@@ -78,12 +80,12 @@ def RabinMiller(N, k):
 
 def main(args):
 	if len(args) < 2:
-		print("ERROR. Program arguments not valid.\nUSAGE: RabinMiller.py [NUMBER_TO_TEST] [K-value (default = 10)]\n")
+		print("ERROR. Program arguments not valid.\nUSAGE: RabinMiller.py [NUMBER_TO_TEST] [K-value (default = 5)]\n")
 		return
 	if len(args) > 2:
 		k = int(args[2])
 	else:
-		k = 10
+		k = 5
 	N = int(args[1]);
 	RabinMiller(N, k)
 	
