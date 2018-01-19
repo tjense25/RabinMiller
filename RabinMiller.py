@@ -19,7 +19,7 @@ def gcd(x, y):
 		return gcd(y, x%y)
 
 
-def getNontrivialFactors(N, b):
+def getNonTrivialFactors(N, b):
 	p = gcd(N, b + 1)
 	q = N/p
 	return "%d * %d" % (p, q)
@@ -55,18 +55,20 @@ def RabinMiller(N, k):
 			#Now progressively square the b each step till we get to a^(2^(r - 1)*d)
 			#if a b is -1, then it is probably prime, and 1 then it is definitely composite so return
 			for i in range(r - 1):
-				b = b*b % N
-				if b == 1:
+				b_square = b*b % N
+				if b_square == 1:
 					#We have found a nontrivial square root of 1!! N must be composite!!
-					print("%d is composite with Non-Trivial Factors: %s" % (N, getNonTrivialFactors(N, b)))
+					print("%d is composite with Non-Trivial Divisors: %s" % (N, getNonTrivialFactors(N, b)))
 					return
-				if b == -1:
+				if b_square == -1:
 					#N passes fermat, so it is probably prime. So contiue witness loop
 					raise ContinueWitnessLoop()
+				b = b_square
 			
 			#if we have exited the r loop, then that means a^(2^(r - 1)) is neither 1 nor -1, 
 			#so know that it is composite, but can't find nontrivial root
 			print("%d is composite" % N)
+			return
 			
 		except ContinueWitnessLoop:
 			pass
